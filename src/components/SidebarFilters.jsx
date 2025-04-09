@@ -2,23 +2,33 @@ import React from "react";
 import { Divider, Radio, Slider, Rate, Button } from "antd";
 import "./SidebarFilters.css";
 
-const SidebarFilters = ({ filters, setFilters, categories, clearFilters }) => {
+const SidebarFilters = ({
+  filters,
+  setFilters,
+  categories,
+  clearFilters,
+  isCategoriesLoading,
+}) => {
   return (
     <div style={{ padding: 20 }}>
       <h3>Categories</h3>
-      <Radio.Group
-        onChange={(e) =>
-          setFilters((prev) => ({ ...prev, category: e.target.value }))
-        }
-        value={filters.category}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        {categories.map((cat) => (
-          <Radio key={cat} value={cat}>
-            {cat}
-          </Radio>
-        ))}
-      </Radio.Group>
+      {isCategoriesLoading ? (
+        <h6>Loading...</h6>
+      ) : (
+        <Radio.Group
+          onChange={(e) =>
+            setFilters((prev) => ({ ...prev, category: e.target.value }))
+          }
+          value={filters.category}
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          {categories.map((cat) => (
+            <Radio key={cat} value={cat}>
+              {cat}
+            </Radio>
+          ))}
+        </Radio.Group>
+      )}
 
       <Divider />
 

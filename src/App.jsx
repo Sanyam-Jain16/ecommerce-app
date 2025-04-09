@@ -9,6 +9,8 @@ const { Search } = Input;
 
 const App = () => {
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filters, setFilters] = useState({
@@ -30,15 +32,19 @@ const App = () => {
   }, [filters, products]);
 
   const fetchProducts = async () => {
+    setIsLoading(true);
     const res = await fetch("https://fakestoreapi.com/products");
     const data = await res.json();
     setProducts(data);
+    setIsLoading(false);
   };
 
   const fetchCategories = async () => {
+    setIsCategoriesLoading(true);
     const res = await fetch("https://fakestoreapi.com/products/categories");
     const data = await res.json();
     setCategories(data);
+    setIsCategoriesLoading(false);
   };
 
   const applyFilters = () => {
@@ -75,6 +81,7 @@ const App = () => {
           setFilters={setFilters}
           categories={categories}
           clearFilters={clearFilters}
+          isCategoriesLoading={isCategoriesLoading}
         />
       </Sider>
       <Layout>
@@ -88,20 +95,26 @@ const App = () => {
             style={{ marginBottom: "20px", maxWidth: 400 }}
             allowClear
           />
-          <Row gutter={[16, 16]}>
-            {paginatedProducts.map((product) => (
-              <Col xs={24} sm={12} md={8} lg={6} key={product.id}>
-                <ProductCard product={product} />
-              </Col>
-            ))}
-          </Row>
-          <Pagination
-            current={currentPage}
-            total={filteredProducts.length}
-            pageSize={pageSize}
-            onChange={(page) => setCurrentPage(page)}
-            style={{ marginTop: 30, textAlign: "center" }}
-          />
+          {isLoading ? (
+            <h1>Loading...</h1>
+          ) : (
+            <>
+              <Row gutter={[16, 16]}>
+                {paginatedProducts.map((product) => (
+                  <Col xs={24} sm={12} md={8} lg={6} key={product.id}>
+                    <ProductCard product={product} />
+                  </Col>
+                ))}
+              </Row>
+              <Pagination
+                current={currentPage}
+                total={filteredProducts.length}
+                pageSize={pageSize}
+                onChange={(page) => setCurrentPage(page)}
+                style={{ marginTop: 30, textAlign: "center" }}
+              />
+            </>
+          )}
         </Content>
       </Layout>
     </Layout>
